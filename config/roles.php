@@ -13,6 +13,7 @@ return [
         'store',    // Store Manager
         'user',     // General User
         'production', // Production Manager
+        'logistics', // Logistics Manager
     ],
 
     'permissions' => [
@@ -46,6 +47,15 @@ return [
         'access store module',
         'access user module',
         'access reports module',
+        'access logistics module',
+
+        // Logistics
+        'manage fleet',
+        'manage drivers',
+        'manage deliveries',
+        'manage inspections',
+        'manage incidents',
+        'view logistics reports',
     ],
 
     'role_permissions' => [
@@ -100,6 +110,16 @@ return [
         'user' => [
             'access project module',
             'view project',
+        ],
+
+        'logistics' => [
+            'access logistics module',
+            'manage fleet',
+            'manage drivers',
+            'manage deliveries',
+            'manage inspections',
+            'manage incidents',
+            'view logistics reports',
         ],
     ],
 ];

@@ -77,6 +77,142 @@ Route::middleware(['auth', 'role:store|storeadmin|procurement|super-admin'])->pr
     Route::post('/defective-items', [DefectiveItemController::class, 'store'])->name('defective_items.store');
 });
 
+// Logistics Routes
+Route::middleware(['auth', 'role:logistics|super-admin'])->prefix('logistics')->name('logistics.')->group(function () {
+    // Dashboard
+    Route::get('/dashboard', function () {
+        return view('logistics.dashboard');
+    })->name('dashboard');
+
+    // Fleet Management Routes
+    Route::prefix('fleet')->name('fleet.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Logistics\FleetController::class, 'index'])->name('index');
+        Route::get('/create', [\App\Http\Controllers\Logistics\FleetController::class, 'create'])->name('create');
+        Route::post('/', [\App\Http\Controllers\Logistics\FleetController::class, 'store'])->name('store');
+        Route::get('/{vehicle}', [\App\Http\Controllers\Logistics\FleetController::class, 'show'])->name('show');
+        Route::get('/{vehicle}/edit', [\App\Http\Controllers\Logistics\FleetController::class, 'edit'])->name('edit');
+        Route::put('/{vehicle}', [\App\Http\Controllers\Logistics\FleetController::class, 'update'])->name('update');
+        Route::delete('/{vehicle}', [\App\Http\Controllers\Logistics\FleetController::class, 'destroy'])->name('destroy');
+        
+        // Vehicle Status Management
+        Route::patch('/{vehicle}/status', [\App\Http\Controllers\Logistics\FleetController::class, 'updateStatus'])->name('update-status');
+        
+        // Vehicle Maintenance
+        Route::get('/{vehicle}/maintenance', [\App\Http\Controllers\Logistics\FleetController::class, 'maintenance'])->name('maintenance');
+        Route::post('/{vehicle}/maintenance', [\App\Http\Controllers\Logistics\FleetController::class, 'storeMaintenance'])->name('store-maintenance');
+    });
+
+    // Driver Management Routes
+    Route::prefix('drivers')->name('drivers.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Logistics\DriverController::class, 'index'])->name('index');
+        Route::get('/create', [\App\Http\Controllers\Logistics\DriverController::class, 'create'])->name('create');
+        Route::post('/', [\App\Http\Controllers\Logistics\DriverController::class, 'store'])->name('store');
+        Route::get('/{driver}', [\App\Http\Controllers\Logistics\DriverController::class, 'show'])->name('show');
+        Route::get('/{driver}/edit', [\App\Http\Controllers\Logistics\DriverController::class, 'edit'])->name('edit');
+        Route::put('/{driver}', [\App\Http\Controllers\Logistics\DriverController::class, 'update'])->name('update');
+        Route::delete('/{driver}', [\App\Http\Controllers\Logistics\DriverController::class, 'destroy'])->name('destroy');
+        
+        // Driver Availability
+        Route::patch('/{driver}/availability', [\App\Http\Controllers\Logistics\DriverController::class, 'updateAvailability'])->name('update-availability');
+        
+        // Driver Schedule
+        Route::get('/{driver}/schedule', [\App\Http\Controllers\Logistics\DriverController::class, 'schedule'])->name('schedule');
+    });
+
+    // Vehicle Inspection Routes
+    Route::prefix('inspections')->name('inspections.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Logistics\InspectionController::class, 'index'])->name('index');
+        Route::get('/create', [\App\Http\Controllers\Logistics\InspectionController::class, 'create'])->name('create');
+        Route::post('/', [\App\Http\Controllers\Logistics\InspectionController::class, 'store'])->name('store');
+        Route::get('/{inspection}', [\App\Http\Controllers\Logistics\InspectionController::class, 'show'])->name('show');
+        Route::get('/{inspection}/edit', [\App\Http\Controllers\Logistics\InspectionController::class, 'edit'])->name('edit');
+        Route::put('/{inspection}', [\App\Http\Controllers\Logistics\InspectionController::class, 'update'])->name('update');
+        Route::delete('/{inspection}', [\App\Http\Controllers\Logistics\InspectionController::class, 'destroy'])->name('destroy');
+        
+        // Inspection Results
+        Route::post('/{inspection}/results', [\App\Http\Controllers\Logistics\InspectionController::class, 'storeResults'])->name('store-results');
+        
+        // Inspection Calendar
+        Route::get('/calendar', [\App\Http\Controllers\Logistics\InspectionController::class, 'calendar'])->name('calendar');
+    });
+
+    // Delivery Planning Routes
+    Route::prefix('deliveries')->name('deliveries.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Logistics\DeliveryController::class, 'index'])->name('index');
+        Route::get('/create', [\App\Http\Controllers\Logistics\DeliveryController::class, 'create'])->name('create');
+        Route::post('/', [\App\Http\Controllers\Logistics\DeliveryController::class, 'store'])->name('store');
+        Route::get('/{delivery}', [\App\Http\Controllers\Logistics\DeliveryController::class, 'show'])->name('show');
+        Route::get('/{delivery}/edit', [\App\Http\Controllers\Logistics\DeliveryController::class, 'edit'])->name('edit');
+        Route::put('/{delivery}', [\App\Http\Controllers\Logistics\DeliveryController::class, 'update'])->name('update');
+        Route::delete('/{delivery}', [\App\Http\Controllers\Logistics\DeliveryController::class, 'destroy'])->name('destroy');
+        
+        // Delivery Status Updates
+        Route::patch('/{delivery}/status', [\App\Http\Controllers\Logistics\DeliveryController::class, 'updateStatus'])->name('update-status');
+        
+        // Route Planning
+        Route::get('/{delivery}/route', [\App\Http\Controllers\Logistics\DeliveryController::class, 'route'])->name('route');
+        Route::post('/{delivery}/route', [\App\Http\Controllers\Logistics\DeliveryController::class, 'storeRoute'])->name('store-route');
+        
+        // Delivery Tracking
+        Route::get('/tracking', [\App\Http\Controllers\Logistics\DeliveryController::class, 'tracking'])->name('tracking');
+    });
+
+    // Load Condition Tracking Routes
+    Route::prefix('load-conditions')->name('load-conditions.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Logistics\LoadConditionController::class, 'index'])->name('index');
+        Route::get('/create', [\App\Http\Controllers\Logistics\LoadConditionController::class, 'create'])->name('create');
+        Route::post('/', [\App\Http\Controllers\Logistics\LoadConditionController::class, 'store'])->name('store');
+        Route::get('/{loadCondition}', [\App\Http\Controllers\Logistics\LoadConditionController::class, 'show'])->name('show');
+        Route::get('/{loadCondition}/edit', [\App\Http\Controllers\Logistics\LoadConditionController::class, 'edit'])->name('edit');
+        Route::put('/{loadCondition}', [\App\Http\Controllers\Logistics\LoadConditionController::class, 'update'])->name('update');
+        Route::delete('/{loadCondition}', [\App\Http\Controllers\Logistics\LoadConditionController::class, 'destroy'])->name('destroy');
+        
+        // Condition Assessment
+        Route::post('/{loadCondition}/assessment', [\App\Http\Controllers\Logistics\LoadConditionController::class, 'storeAssessment'])->name('store-assessment');
+        
+        // Damage Reports
+        Route::post('/{loadCondition}/damage', [\App\Http\Controllers\Logistics\LoadConditionController::class, 'reportDamage'])->name('report-damage');
+    });
+
+    // Incident Reports Routes
+    Route::prefix('incidents')->name('incidents.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Logistics\IncidentController::class, 'index'])->name('index');
+        Route::get('/create', [\App\Http\Controllers\Logistics\IncidentController::class, 'create'])->name('create');
+        Route::post('/', [\App\Http\Controllers\Logistics\IncidentController::class, 'store'])->name('store');
+        Route::get('/{incident}', [\App\Http\Controllers\Logistics\IncidentController::class, 'show'])->name('show');
+        Route::get('/{incident}/edit', [\App\Http\Controllers\Logistics\IncidentController::class, 'edit'])->name('edit');
+        Route::put('/{incident}', [\App\Http\Controllers\Logistics\IncidentController::class, 'update'])->name('update');
+        Route::delete('/{incident}', [\App\Http\Controllers\Logistics\IncidentController::class, 'destroy'])->name('destroy');
+        
+        // Incident Status Updates
+        Route::patch('/{incident}/status', [\App\Http\Controllers\Logistics\IncidentController::class, 'updateStatus'])->name('update-status');
+        
+        // Insurance Claims
+        Route::post('/{incident}/insurance', [\App\Http\Controllers\Logistics\IncidentController::class, 'fileInsuranceClaim'])->name('insurance-claim');
+    });
+
+    // Reports & Analytics Routes
+    Route::prefix('reports')->name('reports.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Logistics\ReportController::class, 'index'])->name('index');
+        Route::get('/daily', [\App\Http\Controllers\Logistics\ReportController::class, 'daily'])->name('daily');
+        Route::get('/monthly', [\App\Http\Controllers\Logistics\ReportController::class, 'monthly'])->name('monthly');
+        Route::get('/fleet-performance', [\App\Http\Controllers\Logistics\ReportController::class, 'fleetPerformance'])->name('fleet-performance');
+        Route::get('/driver-performance', [\App\Http\Controllers\Logistics\ReportController::class, 'driverPerformance'])->name('driver-performance');
+        Route::get('/cost-analysis', [\App\Http\Controllers\Logistics\ReportController::class, 'costAnalysis'])->name('cost-analysis');
+        Route::get('/export/{type}', [\App\Http\Controllers\Logistics\ReportController::class, 'export'])->name('export');
+    });
+
+    // Inspection Centers Routes
+    Route::prefix('inspection-centers')->name('inspection-centers.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Logistics\InspectionCenterController::class, 'index'])->name('index');
+        Route::get('/create', [\App\Http\Controllers\Logistics\InspectionCenterController::class, 'create'])->name('create');
+        Route::post('/', [\App\Http\Controllers\Logistics\InspectionCenterController::class, 'store'])->name('store');
+        Route::get('/{center}', [\App\Http\Controllers\Logistics\InspectionCenterController::class, 'show'])->name('show');
+        Route::get('/{center}/edit', [\App\Http\Controllers\Logistics\InspectionCenterController::class, 'edit'])->name('edit');
+        Route::put('/{center}', [\App\Http\Controllers\Logistics\InspectionCenterController::class, 'update'])->name('update');
+        Route::delete('/{center}', [\App\Http\Controllers\Logistics\InspectionCenterController::class, 'destroy'])->name('destroy');
+    });
+});
 
 // francis
 // Setup Module Routes

@@ -37,7 +37,7 @@
             <li class="nav-item my-2" data-bs-toggle="tooltip" data-bs-placement="right" title="Inventory Management">
                 <a class="nav-link d-flex align-items-center {{ request()->routeIs('inventory.index') ? 'active bg-cyan text-white' : 'text-dark' }}" href="{{ route('inventory.index') }}">
                     <i class="bi bi-list-check me-2"></i>
-                    <span class="nav-text">INVENTORY</span>
+                    <span class="nav-text">Inventory</span>
                 </a>
             </li>
             <li class="nav-item my-2" data-bs-toggle="tooltip" data-bs-placement="right" title="Check-in">
@@ -78,33 +78,94 @@
             </li>
         @endif
 
-        <!-- Projects Sidebar Links -->
-        @if(Auth::check() && $currentDepartment === 'projects' && (Auth::user()->hasAnyRole([]) || Auth::user()->hasRole('super-admin')))
-            <!-- Projects menu items here -->
-            <li class="nav-item my-2" data-bs-toggle="tooltip" data-bs-placement="right" title="View All Projects">
-                <a class="nav-link d-flex align-items-center {{ request()->routeIs('projects.overview') ? 'active bg-cyan text-white' : 'text-dark' }}" href="{{ route('projects.overview') }}">
-                    <i class="bi bi-bar-chart me-2"></i>
-                    <span class="nav-text">PROJECTS DASHBOARD</span>
-                </a>
-            </li>
+        <!-- Global Navigation Links (Visible to All Users) -->
+        @if(Auth::check())
+           
             <li class="nav-item my-2" data-bs-toggle="tooltip" data-bs-placement="right" title="Manage Enquiries">
                 <a class="nav-link d-flex align-items-center {{ request()->routeIs('enquiries.index') ? 'active bg-cyan text-white' : 'text-dark' }}" href="{{ route('enquiries.index') }}">
                     <i class="bi bi-chat-dots me-2"></i>
                     <span class="nav-text">Enquiries</span>
                 </a>
             </li>
+            @if(Auth::user()->hasAnyRole(['pm', 'po', 'super-admin', 'admin']))
             <li class="nav-item my-2" data-bs-toggle="tooltip" data-bs-placement="right" title="View All Projects">
                 <a class="nav-link d-flex align-items-center {{ request()->routeIs('projects.index') ? 'active bg-cyan text-white' : 'text-dark' }}" href="{{ route('projects.index') }}">
                     <i class="bi bi-kanban me-2"></i>
                     <span class="nav-text">Projects</span>
                 </a>
             </li>
-            <!-- <li class="nav-item my-2" data-bs-toggle="tooltip" data-bs-placement="right" title="Active Projects">
-                <a class="nav-link d-flex align-items-center {{ request()->routeIs('projects.active') ? 'active bg-cyan text-white' : 'text-dark' }}" href="{{ route('projects.index', ['filter' => 'active']) }}">
-                    <i class="bi bi-activity me-2"></i>
-                    <span class="nav-text">Active Projects</span>
+            @endif
+            @if(Auth::user()->hasAnyRole(['pm', 'po', 'super-admin', 'admin']))
+            <li class="nav-item my-2" data-bs-toggle="tooltip" data-bs-placement="right" title="Logistics Plan">
+                <a class="nav-link d-flex align-items-center {{ request()->routeIs('logistics.*') ? 'active bg-cyan text-white' : 'text-dark' }}" href="">
+                    <i class="bi bi-truck me-2"></i>
+                    <span class="nav-text">Logistics Plan</span>
                 </a>
-            </li> -->
+            </li>
+            @endif
+        @endif
+
+        <!-- Logistics Department Sidebar Links -->
+        @if(Auth::check() && $currentDepartment === 'logistics' && (Auth::user()->hasRole('logistics') || Auth::user()->hasRole('super-admin')))
+            <li class="nav-item my-2" data-bs-toggle="tooltip" data-bs-placement="right" title="Logistics Dashboard">
+                <a class="nav-link d-flex align-items-center {{ request()->routeIs('logistics.dashboard') ? 'active bg-cyan text-white' : 'text-dark' }}" href="{{ route('logistics.dashboard') }}">
+                    <i class="bi bi-speedometer2 me-2"></i>
+                    <span class="nav-text">Logistics Dashboard</span>
+                </a>
+            </li>
+            
+            <li class="nav-item my-2" data-bs-toggle="tooltip" data-bs-placement="right" title="Fleet Management">
+                <a class="nav-link d-flex align-items-center {{ request()->routeIs('logistics.fleet.*') ? 'active bg-cyan text-white' : 'text-dark' }}" href="{{ route('logistics.fleet.index') }}">
+                    <i class="bi bi-truck me-2"></i>
+                    <span class="nav-text">Fleet Management</span>
+                </a>
+            </li>
+            
+            <li class="nav-item my-2" data-bs-toggle="tooltip" data-bs-placement="right" title="Driver Management">
+                <a class="nav-link d-flex align-items-center {{ request()->routeIs('logistics.drivers.*') ? 'active bg-cyan text-white' : 'text-dark' }}" href="{{ route('logistics.drivers.index') }}">
+                    <i class="bi bi-person-badge me-2"></i>
+                    <span class="nav-text">Driver Management</span>
+                </a>
+            </li>
+            
+            <li class="nav-item my-2" data-bs-toggle="tooltip" data-bs-placement="right" title="Vehicle Inspections">
+                <a class="nav-link d-flex align-items-center {{ request()->routeIs('logistics.inspections.*') ? 'active bg-cyan text-white' : 'text-dark' }}" href="{{ route('logistics.inspections.index') }}">
+                    <i class="bi bi-clipboard-check me-2"></i>
+                    <span class="nav-text">Vehicle Inspections</span>
+                </a>
+            </li>
+            
+            <li class="nav-item my-2" data-bs-toggle="tooltip" data-bs-placement="right" title="Delivery Planning">
+                <a class="nav-link d-flex align-items-center {{ request()->routeIs('logistics.deliveries.*') ? 'active bg-cyan text-white' : 'text-dark' }}" href="{{ route('logistics.deliveries.index') }}">
+                    <i class="bi bi-calendar-check me-2"></i>
+                    <span class="nav-text">Delivery Planning</span>
+                </a>
+            </li>
+            
+            <li class="nav-item my-2" data-bs-toggle="tooltip" data-bs-placement="right" title="Load Condition Tracking">
+                <a class="nav-link d-flex align-items-center {{ request()->routeIs('logistics.load-conditions.*') ? 'active bg-cyan text-white' : 'text-dark' }}" href="{{ route('logistics.load-conditions.index') }}">
+                    <i class="bi bi-box-seam me-2"></i>
+                    <span class="nav-text">Load Conditions</span>
+                </a>
+            </li>
+            
+            <li class="nav-item my-2" data-bs-toggle="tooltip" data-bs-placement="right" title="Incident Reports">
+                <a class="nav-link d-flex align-items-center {{ request()->routeIs('logistics.incidents.*') ? 'active bg-cyan text-white' : 'text-dark' }}" href="{{ route('logistics.incidents.index') }}">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    <span class="nav-text">Incident Reports</span>
+                </a>
+            </li>
+            
+            <li class="nav-item my-2" data-bs-toggle="tooltip" data-bs-placement="right" title="Logistics Reports">
+                <a class="nav-link d-flex align-items-center {{ request()->routeIs('logistics.reports.*') ? 'active bg-cyan text-white' : 'text-dark' }}" href="{{ route('logistics.reports.index') }}">
+                    <i class="bi bi-graph-up me-2"></i>
+                    <span class="nav-text">Reports & Analytics</span>
+                </a>
+            </li>
+        @endif
+
+        <!-- Projects Sidebar Links (Department Specific) -->
+        @if(Auth::check() && $currentDepartment === 'projects' && (Auth::user()->hasAnyRole([]) || Auth::user()->hasRole('super-admin')))
             <li class="nav-item my-2" data-bs-toggle="tooltip" data-bs-placement="right" title="Clients">
                 <a class="nav-link d-flex align-items-center {{ request()->routeIs('clients.index') ? 'active bg-cyan text-white' : 'text-dark' }}"
                     href="{{ route('clients.index') }}">
@@ -112,12 +173,6 @@
                     <span class="nav-text">Clients</span>
                 </a>
             </li>
-            <!-- <li class="nav-item my-2" data-bs-toggle="tooltip" data-bs-placement="right" title="Project Groups">
-                <a class="nav-link d-flex align-items-center">
-                    <i class="bi bi-collection me-2"></i>
-                    <span class="nav-text">Project Groups</span>
-                </a>
-            </li> -->
             <li class="nav-item my-2" data-bs-toggle="tooltip" data-bs-placement="right" title="Item Templates">
                 <a class="nav-link d-flex align-items-center {{ request()->routeIs('templates.*') ? 'active bg-cyan text-white' : 'text-dark' }}" href="{{ route('templates.templates.index') }}">
                     <i class="bi bi-file-earmark-plus me-2"></i>
@@ -193,52 +248,15 @@
             </li>
         @endif
 
-        <!-- Projects Sidebar Links -->
-    @if(Auth::check() 
-    && in_array(Auth::user()->department, ['projects', 'finance', 'production', 'hr', 'design', 'administration', 'ict']) 
-    && Auth::user()->hasAnyRole(['pm', 'po']))
+        <!-- Additional Project Features (Department Specific) -->
+        @if(Auth::check() 
+        && in_array(Auth::user()->department, ['projects', 'finance', 'production', 'hr', 'design', 'administration', 'ict']) 
+        && Auth::user()->hasAnyRole(['pm', 'po', 'super-admin']))
 
-            <li class="nav-item my-2" data-bs-toggle="tooltip" data-bs-placement="right" title="View All Projects">
-                <a class="nav-link d-flex align-items-center {{ request()->routeIs('projects.overview') ? 'active bg-cyan text-white' : 'text-dark' }}" href="{{ route('projects.overview') }}">
-                    <i class="bi bi-bar-chart me-2"></i>
-                    <span class="nav-text">Dashboard</span>
-                </a>
-            </li>
-            <li class="nav-item my-2" data-bs-toggle="tooltip" data-bs-placement="right" title="Manage Enquiries">
-                <a class="nav-link d-flex align-items-center {{ request()->routeIs('enquiries.index') ? 'active bg-cyan text-white' : 'text-dark' }}" href="{{ route('enquiries.index') }}">
-                    <i class="bi bi-chat-dots me-2"></i>
-                    <span class="nav-text">Enquiries</span>
-                </a>
-            </li>
-            <li class="nav-item my-2" data-bs-toggle="tooltip" data-bs-placement="right" title="View All Projects">
-                <a class="nav-link d-flex align-items-center {{ request()->routeIs('projects.index') ? 'active bg-cyan text-white' : 'text-dark' }}" href="{{ route('projects.index') }}">
-                    <i class="bi bi-kanban me-2"></i>
-                    <span class="nav-text">Projects</span>
-                </a>
-            </li>
             <li class="nav-item my-2" data-bs-toggle="tooltip" data-bs-placement="right" title="Active Projects">
                 <a class="nav-link d-flex align-items-center {{ request()->routeIs('projects.active') ? 'active bg-cyan text-white' : 'text-dark' }}" href="{{ route('projects.index', ['filter' => 'active']) }}">
                     <i class="bi bi-activity me-2"></i>
                     <span class="nav-text">Active Projects</span>
-                </a>
-            </li>
-            <li class="nav-item my-2" data-bs-toggle="tooltip" data-bs-placement="right" title="Clients">
-                <a class="nav-link d-flex align-items-center {{ request()->routeIs('clients.index') ? 'active bg-cyan text-white' : 'text-dark' }}"
-                    href="{{ route('clients.index') }}">
-                    <i class="bi bi-people me-2"></i>
-                    <span class="nav-text">Clients</span>
-                </a>
-            </li>
-            <!-- <li class="nav-item my-2" data-bs-toggle="tooltip" data-bs-placement="right" title="Project Groups">
-                <a class="nav-link d-flex align-items-center">
-                    <i class="bi bi-collection me-2"></i>
-                    <span class="nav-text">Project Groups</span>
-                </a>
-            </li> -->
-            <li class="nav-item my-2" data-bs-toggle="tooltip" data-bs-placement="right" title="Item Templates">
-                <a class="nav-link d-flex align-items-center {{ request()->routeIs('templates.*') ? 'active bg-cyan text-white' : 'text-dark' }}" href="{{ route('templates.templates.index') }}">
-                    <i class="bi bi-file-earmark-plus me-2"></i>
-                    <span class="nav-text">Item Templates</span>
                 </a>
             </li>
         @endif

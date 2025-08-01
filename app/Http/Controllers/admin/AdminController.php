@@ -116,7 +116,7 @@ class AdminController extends Controller
     public function setDepartment(Request $request)
     {
         $request->validate([
-            'active_department' => 'required|in:stores,projects,procurement,HR,IT',
+            'active_department' => 'required|in:stores,projects,procurement,HR,IT,logistics',
         ]);
     
         $department = $request->active_department;
@@ -126,6 +126,7 @@ class AdminController extends Controller
         $redirectRoutes = [
             'stores'      => route('inventory.dashboard'),
             'projects'    => route('projects.overview'),
+            'logistics'   => route('logistics.dashboard'),
         ];
     
         return redirect($redirectRoutes[$department] ?? route('admin.dashboard'))
